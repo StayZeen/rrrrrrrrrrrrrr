@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Une question pour toi 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ffd6e8 0%, #ffc2d9 50%, #ffb3c6 100%);
+      font-family: 'Quicksand', sans-serif;
+      overflow: hidden;
+      padding: 16px;
+    }
+
+    /* Cœurs qui flottent en fond */
+    .heart-bg {
+      position: fixed;
+      bottom: -50px;
+      pointer-events: none;
+      animation: monter linear forwards;
+      z-index: 0;
+    }
+    @keyframes monter {
+      to { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+    }
+
+    .carte {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 30px;
+      padding: 40px 30px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(255, 77, 136, 0.3);
+      animation: pop 0.6s ease;
+    }
+    @keyframes pop {
+      from { transform: scale(0.7); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .gif {
+      width: 200px;
+      max-width: 100%;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      color: #ff4d88;
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #b03060;
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+    }
+
+    .boutons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      min-height: 60px;
+    }
+
+    button {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 30px;
+      cursor: pointer;
+      transition: transform 0.2s, font-size 0.2s, padding 0.2s;
+    }
+
+    #oui {
+      background: #ff4d88;
+      color: white;
+      box-shadow: 0 5px 15px rgba(255, 77, 136, 0.5);
+    }
+    #oui:hover { transform: scale(1.1); }
+
+    #non {
+      background: #fff;
+      color: #ff4d88;
+      border: 2px solid #ff4d88;
+    }
+
+    .cache { display: none; }
+
+    .gros-coeur {
+      font-size: 4rem;
+      animation: battre 0.8s infinite;
+      display: inline-block;
+    }
+    @keyframes battre {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.25); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== ÉCRAN 1 : LA QUESTION ===== -->
+  <div class="carte" id="question">
+    <!-- 👇 METS LE LIEN DE TON GIF ICI (entre les guillemets de src) -->
+    <img class="gif" src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="gif mignon">
+
+    <!-- 👇 Remplace "Prénom" par son prénom -->
+    <h1>Prénom 💕</h1>
+    <p>Est-ce que tu veux être ma partenaire ? 🥺</p>
+
+    <div class="boutons">
+      <button id="oui">Oui 💖</button>
+      <button id="non">Non 😢</button>
+    </div>
+  </div>
+
+  <!-- ===== ÉCRAN 2 : QUAND ELLE DIT OUI ===== -->
+  <div class="carte cache" id="reponse">
+    <!-- 👇 METS LE LIEN DU 2e GIF ICI (celui qui s'affiche après le "oui") -->
+    <img class="gif" src="https://media.tenor.com/b9JwrzLuDvEAAAAi/tkthao219-bubududu.gif" alt="gif content">
+
+    <h1>Yaaay !! 🥰</h1>
+    <p>Je savais que tu dirais oui 💘</p>
+    <span class="gros-coeur">❤️</span>
+  </div>
+
+  <script>
+    const btnOui = document.getElementById('oui');
+    const btnNon = document.getElementById('non');
+
+    // Phrases quand elle clique sur "Non"
+    const phrasesNon = [
+      "Non 😢",
+      "T'es sûre ? 🥺",
+      "Vraiment sûre ?? 😭",
+      "Réfléchis encore 💭",
+      "Allez stp 🙏",
+      "Je vais pleurer 😿",
+      "Dernière chance !! 💔",
+      "Bon ok... clique sur Oui 😤"
+    ];
+    let clicsNon = 0;
+
+    // Le bouton "Non" rétrécit et le "Oui" grossit à chaque clic
+    btnNon.addEventListener('click', () => {
+      clicsNon++;
+      btnNon.textContent = phrasesNon[Math.min(clicsNon, phrasesNon.length - 1)];
+      const tailleOui = 1.1 + clicsNon * 0.35;
+      btnOui.style.fontSize = tailleOui + 'rem';
+      btnOui.style.padding = (12 + clicsNon * 4) + 'px ' + (30 + clicsNon * 8) + 'px';
+      btnNon.style.fontSize = Math.max(0.7, 1.1 - clicsNon * 0.08) + 'rem';
+    });
+
+    // Sur ordi : le bouton "Non" s'enfuit quand on passe la souris dessus
+    btnNon.addEventListener('mouseover', () => {
+      if (clicsNon < 2) return; // il commence à fuir après 2 clics
+      btnNon.style.position = 'fixed';
+      const x = Math.random() * (window.innerWidth - btnNon.offsetWidth);
+      const y = Math.random() * (window.innerHeight - btnNon.offsetHeight);
+      btnNon.style.left = x + 'px';
+      btnNon.style.top = y + 'px';
+    });
+
+    // Quand elle clique sur "Oui"
+    btnOui.addEventListener('click', () => {
+      document.getElementById('question').classList.add('cache');
+      document.getElementById('reponse').classList.remove('cache');
+      btnNon.style.display = 'none';
+      for (let i = 0; i < 60; i++) {
+        setTimeout(creerCoeur, i * 50);
+      }
+    });
+
+    // Création des cœurs qui flottent
+    const emojis = ['💖', '💕', '💗', '💓', '❤️', '🌸', '💘'];
+    function creerCoeur() {
+      const c = document.createElement('div');
+      c.className = 'heart-bg';
+      c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.fontSize = (15 + Math.random() * 30) + 'px';
+      c.style.animationDuration = (4 + Math.random() * 5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 9000);
+    }
+    setInterval(creerCoeur, 400);
+  </script>
+</body>
+</html>
